@@ -29,7 +29,9 @@ class LoginController extends Controller{
 			
 		}
 		
-		//to do commenting we use ctrl+k and uncommenting use ctrl+shift+k 
+		try{
+			
+			//to do commenting we use ctrl+k and uncommenting use ctrl+shift+k 
 		// else{
 			// return [
 				// 'code'=>1,
@@ -86,10 +88,41 @@ class LoginController extends Controller{
 			
 			$results->access_token = $access_token;
 			return [
-				'code'=>1,
+				'code'=>0,
 				'data'=>$results,
 				'message'=>'User info updated.'
 			];
 		}
+			
+		}catch(Exception $e){
+			return ['code'=>-1,'data'=>'No data available','message'=>(string)$e];
+		}
+		
+		
+	}
+	public function contact(Request $request){
+		
+		$token = $request->user_token;
+		$res = DB::table('users')->select(
+			'avatar',
+			'description',
+			'online',
+			'token',
+			'name'
+		)->where('token','!=',$token)->get();//here we have used '!=' because we want to show the chat list everyone without the login user(me)
+		
+		// $res = DB::table('users')->select(
+			// 'avatar',
+			// 'description',
+			// 'online',
+			// 'token'
+		// )->get();
+		
+		return [
+			'code'=>0,
+			'data'=>$res,
+			'message'=>'got all the user info.'
+		];
+		
 	}
 }
